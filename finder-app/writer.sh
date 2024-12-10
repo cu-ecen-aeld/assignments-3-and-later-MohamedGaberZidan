@@ -2,15 +2,20 @@
 
 if [ $# -eq 2 ]
 then
+	
+	mkdir -p $1	
 	if [ $# -eq 2 ]
+				
 	then
-		mkdir tmp
+		
 		if [ -d "tmp" ]
 		then
+			mkdir -p tmp	
 			echo $1
 			echo $2 > "$1"
 			exit 0
-		else
+		else	
+
 			echo " String is empty \n"
 			exit 1
 		fi
