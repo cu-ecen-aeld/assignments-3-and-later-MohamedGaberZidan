@@ -131,6 +131,7 @@ bool do_exec_redirect(const char *outputfile, int count, ...)
     {
 	    execv(command[0],command);
 	    perror("execv failed");
+	    exit(127);
     }
     else
     {
