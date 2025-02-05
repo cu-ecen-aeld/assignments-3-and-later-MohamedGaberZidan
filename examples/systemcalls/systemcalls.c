@@ -1,5 +1,9 @@
 #include "systemcalls.h"
-
+#include <stdio.h>
+#include <unistd.h>
+#include <fcntl.h>
+#include <stdlib.h>
+#include <sys/wait.h>
 /**
  * @param cmd the command to execute with system()
  * @return true if the command in @param cmd was executed
@@ -16,8 +20,9 @@ bool do_system(const char *cmd)
  *   and return a boolean true if the system() call completed with success
  *   or false() if it returned a failure
 */
-
-    return true;
+    if(system(cmd) != -1)
+    	return true;
+    return false;
 }
 
 /**
@@ -58,9 +63,28 @@ bool do_exec(int count, ...)
  *   as second argument to the execv() command.
  *
 */
-
+    pid_t pid = fork();
+    if(pid==-1){
+	  printf("Fork error");
+	  return -1;
+    }  
+    if(pid==0)
+    {
+	    execv(command[0],command);
+	    perror("execv failed");
+	    exit(127);
+    }
+    else
+    {
     va_end(args);
-
+    int status;
+    pid_t pid2 = wait(&status);
+    printf("Child with pid = %d has exited",pid2);
+    if(WEXITSTATUS(status) != 0)
+    {
+	return false;
+    }
+    }
     return true;
 }
 
@@ -90,10 +114,38 @@ bool do_exec_redirect(const char *outputfile, int count, ...)
  *   Call execv, but first using https://stackoverflow.com/a/13784315/1446624 as a refernce,
  *   redirect standard out to a file specified by outputfile.
  *   The rest of the behaviour is same as do_exec()
- *
+ *:
 */
+    int fd = open("output",O_WRONLY | O_CREAT | O_TRUNC,0644);
+    if(fd<0)
+	   perror("fd error");
+    dup2(fd,STDOUT_FILENO);
+    close(fd); 
+    pid_t pid = fork();
+     if(pid==-1){
+	  printf("Fork error");
+	  return -1;
+    }
+      
+    if(pid==0)
+    {
+	    execv(command[0],command);
+	    perror("execv failed");
+    }
+    else
+    {
+    va_end(args);
+    int status;
+    pid_t child_pid = waitpid(pid,&status,0);//which means block untiul it cames
+    printf("Parent exited child with child pid %d with status %d\n",child_pid,\
+		    WEXITSTATUS(status));
+    
 
     va_end(args);
-
+    if(WEXITSTATUS(status) != 0)
+    {
+	return false;
+    }
+    }
     return true;
 }

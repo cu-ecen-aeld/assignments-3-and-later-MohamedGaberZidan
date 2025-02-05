@@ -34,7 +34,7 @@ rm -rf "${WRITEDIR}"
 # create $WRITEDIR if not assignment1
 assignment=`cat ../conf/assignment.txt`
 make clean
-make
+
 if [ $assignment != 'assignment1' ]
 then
 	mkdir -p "$WRITEDIR"
