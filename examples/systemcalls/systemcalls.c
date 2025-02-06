@@ -99,6 +99,7 @@ bool do_exec_redirect(const char *outputfile, int count, ...)
     va_start(args, count);
     char * command[count+1];
     int i;
+    printf("Hi Mother father ******************************\n");
     for(i=0; i<count; i++)
     {
         command[i] = va_arg(args, char *);
@@ -116,17 +117,25 @@ bool do_exec_redirect(const char *outputfile, int count, ...)
  *   The rest of the behaviour is same as do_exec()
  *:
 */
-    int fd = open("output",O_WRONLY | O_CREAT | O_TRUNC,0644);
+    int fd = open(outputfile,O_WRONLY | O_CREAT | O_TRUNC,0644);
     if(fd<0)
 	   perror("fd error");
-    dup2(fd,STDOUT_FILENO);
-    close(fd); 
+    printf("Hi mother father 2******************8\n");
+    int original_fd=dup(STDOUT_FILENO); 
+
+    if(dup2(fd,STDOUT_FILENO)<0)
+    {
+	    printf("error occured\n");
+	    return false;
+    }
+    close(fd);
+   
     pid_t pid = fork();
      if(pid==-1){
 	  printf("Fork error");
-	  return -1;
+	  return false;
     }
-      
+    
     if(pid==0)
     {
 	    execv(command[0],command);
@@ -135,18 +144,22 @@ bool do_exec_redirect(const char *outputfile, int count, ...)
     }
     else
     {
-    va_end(args);
     int status;
+    
     pid_t child_pid = waitpid(pid,&status,0);//which means block untiul it cames
+   
+    dup2(original_fd,STDOUT_FILENO);
+    close(original_fd);
+    va_end(args);
     printf("Parent exited child with child pid %d with status %d\n",child_pid,\
 		    WEXITSTATUS(status));
-    
-
-    va_end(args);
+ 
     if(WEXITSTATUS(status) != 0)
     {
+	perror("FAILED");
 	return false;
     }
     }
+    perror("Success");
     return true;
 }

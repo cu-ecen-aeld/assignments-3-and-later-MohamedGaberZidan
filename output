@@ -1,5 +1,5 @@
 home is $HOME
-Parent exited child with child pid 5484 with status 0
+Parent exited child with child pid 3997 with status 0
 Remove trailing newline
 Read home is /home/zidan from testfile.txt
 execv /bin/echo home is $HOME returned home is /home/zidan
