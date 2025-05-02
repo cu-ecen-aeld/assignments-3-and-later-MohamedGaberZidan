@@ -122,6 +122,7 @@ cp ${FINDER_APP_DIR}/finder.sh ${OUTDIR}/rootfs/home/
 cp ${FINDER_APP_DIR}/finder-test.sh ${OUTDIR}/rootfs/home/
 cp ${FINDER_APP_DIR}/writer ${OUTDIR}/rootfs/home/
 cp -r ${FINDER_APP_DIR}/conf ${OUTDIR}/rootfs/home/
+cp -r ${FINDER_APP_DIR}/conf ${OUTDIR}/rootfs/
 cp -r ${FINDER_APP_DIR}/tmp ${OUTDIR}/rootfs/home/
 cp ${FINDER_APP_DIR}/autorun-qemu.sh ${OUTDIR}/rootfs/home/
 
