@@ -124,6 +124,10 @@ cp ${FINDER_APP_DIR}/writer ${OUTDIR}/rootfs/home/
 cp -r ${FINDER_APP_DIR}/conf ${OUTDIR}/rootfs/home/
 cp -r ${FINDER_APP_DIR}/tmp ${OUTDIR}/rootfs/home/
 cp ${FINDER_APP_DIR}/autorun-qemu.sh ${OUTDIR}/rootfs/home/
+
 # TODO: Chown the root directory
 sudo chown -R root:root *
+
+cd ${OUTDIR}/rootfs
+find . -print0 | cpio --null -ov --format=newc | gzip -9 > ${OUTDIR}/initramfs.cpio.gz
 
